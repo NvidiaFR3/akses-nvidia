@@ -1,0 +1,32 @@
+name: Kurangi Hari Akses
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Setiap hari pukul 00:00 UTC
+  workflow_dispatch:
+
+jobs:
+  decrement:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Jalankan pengurangan hari
+        run: node update-days.js
+
+      - name: Commit dan push
+        run: |
+          git config --global user.name "GithubBot"
+          git config --global user.email "bot@github.com"
+          git add akses.json
+          git commit -m "Auto decrement days"
+          git push
